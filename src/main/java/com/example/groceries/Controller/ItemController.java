@@ -17,9 +17,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.groceries.Entity.Category;
 import com.example.groceries.Entity.Item;
 import com.example.groceries.Request.ItemRequest;
 import com.example.groceries.Service.ItemService;
+import com.example.groceries.repository.CategoryRepository;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -28,8 +30,10 @@ public class ItemController {
 
     @Autowired
     private ItemService itemService;
+    private final CategoryRepository categoryRepository;
 
-    public ItemController(ItemService itemService) {
+    public ItemController(ItemService itemService, CategoryRepository categoryRepository) {
+        this.categoryRepository = categoryRepository;
         this.itemService = itemService;
     }
 
@@ -44,9 +48,11 @@ public class ItemController {
         }
     }
 
-    @GetMapping
-    public List<Item> getItems(){
-        return itemService.getItems();
+    @SuppressWarnings("null")
+    @GetMapping(path = "/{categoryId}")
+    public List<Item> getItems(@PathVariable UUID categoryId){
+        Category category = categoryRepository.findById(categoryId).orElseThrow();
+        return itemService.getItems(category);
     }
 
     @PutMapping(path="/{itemId}")

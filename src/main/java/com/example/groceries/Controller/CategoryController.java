@@ -34,7 +34,7 @@ public class CategoryController {
     public ResponseEntity<?> addCategory(@RequestBody Category category) {
         try {
             Category savedCategory = categoryService.addCategory(category);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Successfully added category: " + savedCategory.getName());
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedCategory);
         } catch (IllegalStateException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()  );
         }

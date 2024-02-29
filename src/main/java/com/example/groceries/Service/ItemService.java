@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
+import com.example.groceries.Entity.Category;
 import com.example.groceries.Entity.Item;
 import com.example.groceries.Request.ItemRequest;
 import com.example.groceries.repository.ItemRepository;
@@ -22,9 +23,9 @@ public class ItemService {
 
     private final ItemRepository itemRepository;
 
-    public List<Item> getItems() {
+    public List<Item> getItems(Category category) {
         logger.info("get items method in Item Service has started");
-        return itemRepository.findAll();
+        return itemRepository.findItemsByCategory(category.getCategoryId());
     }
 
     public Item addItem(Item item) {
