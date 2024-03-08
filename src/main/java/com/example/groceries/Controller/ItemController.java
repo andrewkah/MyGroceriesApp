@@ -50,9 +50,19 @@ public class ItemController {
 
     @SuppressWarnings("null")
     @GetMapping(path = "/{categoryId}")
-    public List<Item> getItems(@PathVariable UUID categoryId){
+    public List<Item> getItems(@PathVariable("categoryId") UUID categoryId){
         Category category = categoryRepository.findById(categoryId).orElseThrow();
         return itemService.getItems(category);
+    }
+
+    @GetMapping(path = "/1/{itemId}")
+    public ResponseEntity<?> getSingleItems(@PathVariable @NonNull UUID itemId){
+        try {
+            Item item = itemService.getSingleItem(itemId);
+            return ResponseEntity.status(HttpStatus.CREATED).body(item);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @PutMapping(path="/{itemId}")

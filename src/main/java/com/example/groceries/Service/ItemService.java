@@ -42,6 +42,12 @@ public class ItemService {
 
     }
 
+    @SuppressWarnings("null")
+    public Item getSingleItem(UUID itemId){
+        logger.info("add items method in Item Service has started");
+        return itemRepository.findById(itemId).orElseThrow(() -> new IllegalStateException("Item not found"));
+    }
+
     public String removeItem(@NonNull UUID itemId) {
         logger.info("remove items method in Item Service has started");
         boolean idExists = itemRepository.existsById(itemId);
