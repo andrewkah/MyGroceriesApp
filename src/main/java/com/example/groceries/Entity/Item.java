@@ -24,6 +24,7 @@ public class Item {
 
     // @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     // @JoinColumn(name = "category_id")
+    @Column(nullable = false)
     private UUID category;
 
     @Column(nullable = false)
