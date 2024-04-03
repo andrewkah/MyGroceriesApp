@@ -20,6 +20,7 @@ import java.io.UnsupportedEncodingException;
 public class PasswordResetEmail {
     private final JavaMailSender mailSender;
 
+    @SuppressWarnings("null")
     public JavaMailSender sendPasswordResetEmail(UserPasswordReset theUser, String token)
             throws MessagingException, UnsupportedEncodingException {
         String subject = "Password Reset Request Verification";

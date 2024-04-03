@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.groceries.Entity.Category;
 import com.example.groceries.Entity.Item;
@@ -13,7 +14,6 @@ import com.example.groceries.Request.CategoryRequest;
 import com.example.groceries.repository.CategoryRepository;
 import com.example.groceries.repository.ItemRepository;
 
-import jakarta.transaction.Transactional;
 
 @Service
 public class CategoryService {
@@ -65,7 +65,7 @@ public class CategoryService {
 	}
 
 	@SuppressWarnings("null")
-	public String deleteCategory(@NonNull UUID categoryId) {
+	public String deleteCategory(UUID categoryId) {
 		logger.info("delete category method in Category Service has started");
 		boolean idExists = categoryRepository.existsById(categoryId); 
 		if (!idExists) {
