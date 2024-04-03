@@ -6,13 +6,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.groceries.Entity.Category;
 import com.example.groceries.Entity.Item;
 import com.example.groceries.Request.ItemRequest;
 import com.example.groceries.repository.ItemRepository;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -82,6 +82,11 @@ public class ItemService {
         logger.info(item.name() + " updated successfully");
         logger.info("update items method in Item Service has ended");
         return "Item updated successfully";
+    }
+
+    public List<Item> getItemsByQuantity(){
+        List<Item> items = itemRepository.findItemsByQuantity(5.0);
+        return items;
     }
 
 }

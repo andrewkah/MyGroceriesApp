@@ -17,4 +17,7 @@ public interface ItemRepository extends JpaRepository<Item, UUID> {
     @Query("SELECT i FROM Item i WHERE i.category = :categoryId")
     List<Item> findItemsByCategory(@Param("categoryId") UUID category);
 
+    @Query("SELECT i FROM Item i WHERE i.quantity < :quantityThreshold")
+    List<Item> findItemsByQuantity(Double quantityThreshold);
+
 }
