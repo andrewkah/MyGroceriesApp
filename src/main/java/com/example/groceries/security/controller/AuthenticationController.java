@@ -15,6 +15,7 @@ import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import java.io.UnsupportedEncodingException;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,18 +31,33 @@ public class AuthenticationController {
     private final AuthService authService;
 
     @PostMapping(path = "/signup")
-    public ResponseEntity<JwtAuthResponse> signup(@RequestBody SignUpRequest request) {
-        return ResponseEntity.ok(authService.signup(request));
+    public ResponseEntity<?> signup(@RequestBody SignUpRequest request) {
+        try {
+            JwtAuthResponse auth = authService.signup(request);
+            return ResponseEntity.status(HttpStatus.CREATED).body(auth);
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @PostMapping(path = "/signin")
-    public ResponseEntity<JwtAuthResponse> signin(@RequestBody SignInRequest request) {
-        return ResponseEntity.ok(authService.signin(request));
+    public ResponseEntity<?> signin(@RequestBody SignInRequest request) {
+        try {
+            JwtAuthResponse auth = authService.signin(request);
+            return ResponseEntity.status(HttpStatus.CREATED).body(auth);
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @PostMapping(path = "/refresh")
-    public ResponseEntity<JwtAuthResponse> refreshToken(@RequestBody RefreshTokenRequest request) {
-        return ResponseEntity.ok(authService.refreshToken(request));
+    public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequest request) {
+        try {
+            JwtAuthResponse auth = authService.refreshToken(request);
+            return ResponseEntity.status(HttpStatus.CREATED).body(auth);
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @GetMapping("/user")
@@ -51,11 +67,21 @@ public class AuthenticationController {
 
     @PostMapping(path = "/forgot-password")
     public ResponseEntity<String> forgotPassword(@RequestBody UserPasswordReset user) throws UnsupportedEncodingException, MessagingException {
-        return ResponseEntity.ok(authService.passwordResetToken(user));
+        try {
+            String auth = authService.passwordResetToken(user);
+            return ResponseEntity.status(HttpStatus.CREATED).body(auth);
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @PostMapping(path = "/reset-password")
     public ResponseEntity<String> resetPassword(@RequestBody UserPasswordReset request) {
-        return ResponseEntity.ok(authService.resetPassword(request));
+        try {
+            String auth = authService.resetPassword(request);
+            return ResponseEntity.status(HttpStatus.CREATED).body(auth);
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 }
