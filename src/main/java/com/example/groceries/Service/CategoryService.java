@@ -13,87 +13,94 @@ import com.example.groceries.Entity.Item;
 import com.example.groceries.Request.CategoryRequest;
 import com.example.groceries.repository.CategoryRepository;
 import com.example.groceries.repository.ItemRepository;
+import com.example.groceries.security.entity.User;
+import com.example.groceries.security.repository.UserRepository;
 
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class CategoryService {
 	Logger logger = LoggerFactory.getLogger(CategoryService.class);
 
 	private final CategoryRepository categoryRepository;
 	private final ItemRepository itemRepository;
 	private final ItemService itemService;
-
-	public CategoryService(CategoryRepository categoryRepository, ItemRepository itemRepository, ItemService itemService) {
-		this.categoryRepository = categoryRepository;
-		this.itemRepository = itemRepository;
-		this.itemService = itemService;
-	}
+	private final UserRepository userRepository;
 
 	public Category addCategory(Category category) {
 		logger.info("add category method in Category Service has started");
-		Optional<Category> categoryByName = categoryRepository.findCategoryByName(category.getName());
-		if (categoryByName.isPresent()) {
-			throw new IllegalStateException("Category already exists");
+		Optional<User> currentUser = userRepository.findUserByUsername(category.getUsername());
+		if (!currentUser.isPresent()) {
+			throw new IllegalStateException("User not found");
 		} else {
+			Optional<Category> existingCategory = categoryRepository.findCategoryByNameAndUsername(category.getName(),
+					category.getUsername());
+			if (existingCategory.isPresent()) {
+				throw new IllegalStateException("Category already exists");
+			}
+
 			Category categoryOut = categoryRepository.save(category);
-			// Category categoryIn = new Category(category.getName());
-
-			// List<Item> items = new ArrayList<>();
-			// for (Item itemIn : category.getItems()) {
-
-			// Item item = new Item(itemIn.getPrice(), itemIn.getQuantity(),
-			// itemIn.getUnit(), itemIn.getName());
-
-			// item.setCategory(categoryIn);
-
-			// items.add(item);
-			// itemRepository.save(item);
-			// }
-
-			// categoryIn.setItems(items);
-
-			// Category categoryOut = categoryRepository.save(categoryIn);
 			logger.info(category + " created");
 			logger.info("add category method in Category Service has ended");
 			return categoryOut;
 		}
+
 	}
 
-	public List<Category> getCategories() {
+	public List<Category> getCategories(String username) {
 		logger.info("get category method in Category Service has started");
-		return categoryRepository.findAll();
+		Optional<User> currentUser = userRepository.findUserByUsername(username);
+		if (!currentUser.isPresent()) {
+			throw new IllegalStateException("User not found");
+		}
+			Optional<Category> categoryIn = categoryRepository.findCategoryByUsername(username);
+			if (categoryIn.isEmpty()) {
+				throw new IllegalStateException("Category not found");
+			}
+			return categoryRepository.findAll();
+		
 	}
 
-	@SuppressWarnings("null")
-	public String deleteCategory(UUID categoryId) {
+	public String deleteCategory(UUID categoryId, String username) {
 		logger.info("delete category method in Category Service has started");
-		boolean idExists = categoryRepository.existsById(categoryId); 
-		if (!idExists) {
-			throw new IllegalStateException("Category does not exist!");
+		Optional<User> currentUser = userRepository.findUserByUsername(username);
+		if (!currentUser.isPresent()) {
+			throw new IllegalStateException("User not found");
 		} else {
-			List<Item> items = itemRepository.findItemsByCategory(categoryId);
-			for (Item itemIn : items) {
-				itemService.removeItem(itemIn.getItemId());
+			boolean idExists = categoryRepository.existsById(categoryId);
+			if (!idExists && currentUser.isPresent()) {
+				throw new IllegalStateException("Category does not exist!");
+			} else {
+				List<Item> items = itemRepository.findItemsByCategory(categoryId);
+				for (Item itemIn : items) {
+					itemService.removeItem(itemIn.getItemId());
+				}
+				categoryRepository.deleteById(categoryId);
+				logger.info("delete category method in Category Service has ended");
+				return "Category deleted successfully";
 			}
-			categoryRepository.deleteById(categoryId);
-			logger.info("delete category method in Category Service has ended");
-			return "Category deleted successfully";
 		}
 	}
 
 	@Transactional
 	public String updateCategory(@NonNull UUID categoryId, CategoryRequest category) {
 		logger.info("update category method in Category Service has started");
-		Category dbCategory = categoryRepository.findById(categoryId)
-				.orElseThrow(() -> new IllegalStateException(
-						"Category does not exist!"));
+		Optional<User> currentUser = userRepository.findUserByUsername(category.username());
+		if (!currentUser.isPresent()) {
+			throw new IllegalStateException("User not found");
+		} else {
+			Category dbCategory = categoryRepository.findById(categoryId)
+					.orElseThrow(() -> new IllegalStateException(
+							"Category does not exist!"));
 
-		if (category.name() != null && category.name().length() > 0
-				&& !Objects.equals(dbCategory.getName(), category.name())) {
-			dbCategory.setName(category.name());
+			if (category.name() != null && category.name().length() > 0
+					&& !Objects.equals(dbCategory.getName(), category.name())) {
+				dbCategory.setName(category.name());
+			}
+			logger.info("update category method in Category Service has ended");
+			return "Category updated successfully";
 		}
-		logger.info("update category method in Category Service has ended");
-		return "Category updated successfully";
 	}
 
 }

@@ -23,10 +23,10 @@ public class Category {
     @Column(name = "category_id", nullable = false, unique = true, updatable = false)
     protected UUID categoryId;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String name;
 
-    // @OneToMany(fetch = FetchType.EAGER, mappedBy = "category", cascade = CascadeType.ALL)
-    // private List<Item> items;
+    @Column(name = "user_id")
+    private String username;
 
 }

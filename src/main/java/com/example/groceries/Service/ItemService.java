@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.groceries.Entity.Category;
 import com.example.groceries.Entity.Item;
 import com.example.groceries.Request.ItemRequest;
+import com.example.groceries.repository.CategoryRepository;
 import com.example.groceries.repository.ItemRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -22,28 +23,32 @@ public class ItemService {
     Logger logger = LoggerFactory.getLogger(ItemService.class);
 
     private final ItemRepository itemRepository;
+    private final CategoryRepository categoryRepository;
 
     public List<Item> getItems(Category category) {
         logger.info("get items method in Item Service has started");
         return itemRepository.findItemsByCategory(category.getCategoryId());
     }
 
-    public Item addItem(Item item) {
+    public Item addItem(String username, Item item) {
         logger.info("add items method in Item Service has started");
-        Optional<Item> itemByName = itemRepository.findItemByName(item.getName());
-        if (itemByName.isPresent()) {
-            throw new IllegalStateException("Item already exists");
-        } else {
-            Item savedItem = itemRepository.save(item);
-            logger.info(item + " added");
-            logger.info("add items method in Item Service has ended");
-            return savedItem;
+        Optional<Category> categories = categoryRepository.findCategoryByUsername(username);
+        logger.info(categories + " added");
+        if (categories.isPresent()) {
+            List<Item> items = itemRepository.findItemsByCategory(item.getCategory());
+            for (Item existingItem : items) {
+                if (existingItem.getName().equals(item.getName())) {
+                    throw new IllegalStateException("Item already exists");
+                }
+            }
         }
-
+        Item savedItem = itemRepository.save(item);
+        logger.info(item + " added");
+        logger.info("add items method in Item Service has ended");
+        return savedItem;
     }
 
-    @SuppressWarnings("null")
-    public Item getSingleItem(UUID itemId){
+    public Item getSingleItem(UUID itemId) {
         logger.info("add items method in Item Service has started");
         return itemRepository.findById(itemId).orElseThrow(() -> new IllegalStateException("Item not found"));
     }
@@ -59,7 +64,6 @@ public class ItemService {
         return "Item deleted successfully";
     }
 
-    @SuppressWarnings("null")
     @Transactional
     public String updateItem(@NonNull UUID itemId, ItemRequest item) {
         logger.info("update items method in Item Service has started");
@@ -84,7 +88,7 @@ public class ItemService {
         return "Item updated successfully";
     }
 
-    public List<Item> getItemsByQuantity(){
+    public List<Item> getItemsByQuantity() {
         List<Item> items = itemRepository.findItemsByQuantity(5.0);
         return items;
     }

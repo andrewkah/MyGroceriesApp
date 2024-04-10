@@ -34,17 +34,16 @@ public class ItemController {
     private final CategoryRepository categoryRepository;
 
 
-    @PostMapping(path = "/add")
-    public ResponseEntity<?> addItem(@RequestBody Item item){
+    @PostMapping(path = "/add/{username}")
+    public ResponseEntity<?> addItem(@PathVariable("username") String username, @RequestBody Item item){
         try {
-            Item savedItem = itemService.addItem(item);
+            Item savedItem = itemService.addItem(username, item);
             return ResponseEntity.status(HttpStatus.CREATED).body(savedItem);
         } catch (IllegalStateException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
-    @SuppressWarnings("null")
     @GetMapping(path = "/{categoryId}")
     public List<Item> getItems(@PathVariable("categoryId") UUID categoryId){
         Category category = categoryRepository.findById(categoryId).orElseThrow();

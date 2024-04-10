@@ -40,26 +40,26 @@ public class CategoryController {
         }
     }
 
-    @GetMapping
-    public List<Category> getCategories() {
-        return categoryService.getCategories();
+    @GetMapping(path = "/{username}")
+    public List<Category> getCategories(@PathVariable("username") String username) {
+        return categoryService.getCategories(username);
     }
 
     @PutMapping(path = "/{categoryId}")
     public ResponseEntity<String> updateCategory(@PathVariable("categoryId") @NonNull UUID categoryId,
-            @RequestBody CategoryRequest name) {
+            @RequestBody CategoryRequest category) {
         try {
-            String updatedCategory = categoryService.updateCategory(categoryId, name);
+            String updatedCategory = categoryService.updateCategory(categoryId, category);
             return ResponseEntity.status(HttpStatus.CREATED).body(updatedCategory);
         } catch (IllegalStateException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
-    @DeleteMapping(path = "/{categoryId}")
-    public ResponseEntity<String> deleteCategory(@PathVariable("categoryId") @NonNull UUID categoryId) {
+    @DeleteMapping(path = "/{categoryId}/{username}")
+    public ResponseEntity<String> deleteCategory(@PathVariable("categoryId") @NonNull UUID categoryId, @PathVariable("username") String username) {
         try {
-            String deletedCategory = categoryService.deleteCategory(categoryId);
+            String deletedCategory = categoryService.deleteCategory(categoryId, username);
             return ResponseEntity.status(HttpStatus.CREATED).body(deletedCategory);
         } catch (IllegalStateException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
