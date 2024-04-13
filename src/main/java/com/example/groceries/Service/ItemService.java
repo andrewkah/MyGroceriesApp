@@ -32,9 +32,9 @@ public class ItemService {
 
     public Item addItem(String username, Item item) {
         logger.info("add items method in Item Service has started");
-        Optional<Category> categories = categoryRepository.findCategoryByUserName(username);
+        List<Category> categories = categoryRepository.findCategoryByUsername(username);
         logger.info(categories + " added");
-        if (categories.isPresent()) {
+        if (!categories.isEmpty()) {
             List<Item> items = itemRepository.findItemsByCategory(item.getCategory());
             for (Item existingItem : items) {
                 if (existingItem.getName().equals(item.getName())) {
