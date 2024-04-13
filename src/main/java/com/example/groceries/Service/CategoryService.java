@@ -54,8 +54,8 @@ public class CategoryService {
 		if (!currentUser.isPresent()) {
 			throw new IllegalStateException("User not found");
 		} else {
-			Optional<Category> categoryIn = categoryRepository.findCategoryByUsername(username);
-			if (!categoryIn.isPresent()) {
+			List<Category> categoryIn = categoryRepository.findCategoryByUsername(username);
+			if (categoryIn.isEmpty()) {
 				throw new IllegalStateException("Category not found");
 			}
 			return categoryRepository.findAll();

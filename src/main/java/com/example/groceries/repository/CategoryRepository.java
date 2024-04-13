@@ -15,7 +15,10 @@ public interface CategoryRepository extends JpaRepository<Category, UUID>{
     Optional<Category> findCategoryByName(String name);
 
     @Query("SELECT i FROM Category i WHERE i.username = :usernameStr")
-    Optional<Category> findCategoryByUsername(String usernameStr);
+    List<Category> findCategoryByUsername(String usernameStr);
+
+    @Query("SELECT i FROM Category i WHERE i.username = :usernameStr")
+    Optional<Category> findCategoryByUserName(String usernameStr);
 
     @Query("SELECT c FROM Category c WHERE c.username = :username AND c.name = :name")
     Optional<Category> findCategoryByNameAndUsername(@Param("name") String name, @Param("username") String username);
