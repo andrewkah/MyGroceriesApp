@@ -55,7 +55,7 @@ public class CategoryService {
 			throw new IllegalStateException("User not found");
 		}
 			Optional<Category> categoryIn = categoryRepository.findCategoryByUsername(username);
-			if (categoryIn.isEmpty()) {
+			if (!categoryIn.isPresent()) {
 				throw new IllegalStateException("Category not found");
 			}
 			return categoryRepository.findAll();
