@@ -41,8 +41,13 @@ public class CategoryController {
     }
 
     @GetMapping(path = "/{username}")
-    public List<Category> getCategories(@PathVariable("username") String username) {
-        return categoryService.getCategories(username);
+    public ResponseEntity<?> getCategories(@PathVariable("username") String username) {
+        try {
+            List<Category> savedCategory = categoryService.getCategories(username);
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedCategory);
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @PutMapping(path = "/{categoryId}")
