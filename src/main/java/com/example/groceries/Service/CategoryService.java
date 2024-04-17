@@ -53,13 +53,13 @@ public class CategoryService {
 		Optional<User> currentUser = userRepository.findUserByUsername(username);
 		if (!currentUser.isPresent()) {
 			throw new IllegalStateException("User not found");
-		} else {
-			List<Category> categoryIn = categoryRepository.findCategoryByUsername(username);
-			if (categoryIn.isEmpty()) {
-				throw new IllegalStateException("Category not found");
-			}
-			return categoryRepository.findAll();
+		} 
+		List<Category> categoryIn = categoryRepository.findCategoryByUsername(username);
+		if (categoryIn.isEmpty()) {
+			throw new IllegalStateException("No Categories found");
 		}
+		return categoryRepository.findAll();
+		
 	}
 
 	public String deleteCategory(UUID categoryId, String username) {
