@@ -27,7 +27,7 @@ public class JwtServiceImpl implements JwtService {
                 .builder()
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) /// Expiration after one hour
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) /// Expiration after Ten hour
                 .signWith(setSigninKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
