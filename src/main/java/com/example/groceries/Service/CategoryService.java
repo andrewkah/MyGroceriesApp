@@ -58,7 +58,7 @@ public class CategoryService {
 		if (categoryIn.isEmpty()) {
 			throw new IllegalStateException("No Categories found");
 		}
-		return categoryRepository.findAll();
+		return categoryRepository.findCategoryByUsername(username);
 		
 	}
 
