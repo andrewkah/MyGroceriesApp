@@ -96,17 +96,17 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<version>3.14.0</version>
 				<configuration>
-					<image>
-						<builder>paketobuildpacks/builder-jammy-base:latest</builder>
-					</image>
+					<rulesets>
+						<ruleset>pmd_ruleset.xml</ruleset>
+					</rulesets>
+					<verbose>true</verbose>
+					<targetJdk>17</targetJdk>
 					<excludes>
-						<exclude>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-						</exclude>
+						<exclude>**/lombok.config</exclude>
 					</excludes>
 				</configuration>
 			</plugin>
