@@ -16,7 +16,7 @@ FROM tomcat:9.0
 RUN rm -rf /usr/local/tomcat/webapps/*
 
 # Copy WAR into webapps
-COPY C:/Users/Andrew/AppData/Local/Jenkins/.jenkins/workspace/CI_CDPipeline/target/Groceries-0.0.1-SNAPSHOT.jar.original /usr/local/tomcat/webapps
+COPY target/Groceries-0.0.1-SNAPSHOT.jar.original /usr/local/tomcat/webapps
 
 # Expose Tomcat port
 EXPOSE 8080
