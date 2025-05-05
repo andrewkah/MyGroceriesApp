@@ -2,6 +2,7 @@ package com.example.groceries.repository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Optional;
 
@@ -11,16 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.example.groceries.Entity.Category;
 
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 @DataJpaTest
 public class CategoryRepositoryTest {
 
     @Autowired
     private CategoryRepository categoryRepository;
-
-    private static final Logger logger = LoggerFactory.getLogger(CategoryRepositoryTest.class);
 
     @Test
     void testFindCategoryByName() {
@@ -33,13 +31,11 @@ public class CategoryRepositoryTest {
         Optional<Category> foundCategory = categoryRepository.findCategoryByName("Test Category");
 
         // Then
-        // if (foundCategory.isPresent()) {
-        //     logger.info("✅ Found category: ", foundCategory.get().getName());
-        // } else {
-        //     logger.info("❌ Category not found!");
-        // }
         assertNotNull(foundCategory);
-        assertEquals("Test Category", foundCategory.get().getName());
+        // assertEquals("Test Category", foundCategory.get().getName());
+        assertThat(foundCategory.get().getName()).isEqualTo("Test Category")
+                .as("The category name matches the expected value: 'Test Category'");
+        System.out.println("✅ Test category found successfully!");
     }
 
     @Test
@@ -52,15 +48,16 @@ public class CategoryRepositoryTest {
         categoryRepository.save(category);
 
         Optional<Category> foundNameAndUsername = categoryRepository.findCategoryByNameAndUsername(name, username);
-        // if (foundNameAndUsername.isPresent()) {
-        //     logger.info("✅ Found Category: ", foundNameAndUsername.get().getName());
-        //     logger.info("✅ Found User name: ", foundNameAndUsername.get().getUsername());
-        // } else {
-        //     logger.info("❌ No User name or Category found!");
-        // }
         assertNotNull(foundNameAndUsername);
-        assertEquals(name, foundNameAndUsername.get().getName());
-        assertEquals(username, foundNameAndUsername.get().getUsername());
+        // assertEquals(name, foundNameAndUsername.get().getName());
+        assertThat(foundNameAndUsername.get().getName()).isEqualTo(name)
+                .as("The category name matches the expected value: 'Vegetables'");
+        System.out.println("✅ Test category found successfully!");
+        // assertEquals(username, foundNameAndUsername.get().getUsername());
+        assertThat(foundNameAndUsername.get().getUsername()).isEqualTo(
+                username)
+                .as("The user name matches the expected value: 'Fred'");
+        System.out.println("✅ Test user name found successfully! ");
     }
 
 }
